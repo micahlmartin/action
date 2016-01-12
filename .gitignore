@@ -1,6 +1,9 @@
 # Build
 dist/
 
+# Tmp
+.tmp/
+
 # Logs
 logs
 *.log
