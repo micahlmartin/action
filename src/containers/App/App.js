@@ -1,16 +1,21 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { isLoaded as isAuthLoaded, load as loadAuth, logout } from 'redux/modules/auth';
+import { addPathHelpers as addPathHelpers } from 'redux/modules/path';
 import { pushState } from 'redux-router';
 import connectData from 'helpers/connectData';
 
 const styles = require('./App.scss');
+
+const hostname = process.env.HOST || 'localhost';
+const port = process.env.PORT;
 
 function fetchData(getState, dispatch) {
   const promises = [];
   if (!isAuthLoaded(getState())) {
     promises.push(dispatch(loadAuth()));
   }
+  promises.push(dispatch(addPathHelpers(hostname, port)));
   return Promise.all(promises);
 }
 
