@@ -23,6 +23,7 @@ export default [
       const [ params, room ] = args;
 
       // TODO: catch exceptions
+      console.log(`meetingsById.subscribe(${params.id}): ${room}`);
       Meeting.subscribe(io, room, params, 'meetingsById');
 
       return [
@@ -39,6 +40,7 @@ export default [
       const [ params, room ] = args;
 
       // TODO: catch exceptions
+      console.log(`meetingsById.unsubscribe(${params.id}): ${room}`);
       Meeting.unsubscribe(room, params, 'meetingsById');
 
       return [

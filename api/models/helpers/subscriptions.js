@@ -33,13 +33,16 @@ export class Subscriptions
    * Returns: Cursor object
    */
   lookup(model, params) {
+    console.log(`lookup(${model}, ${params})`);
     if (!(model in this.byModel)) { return undefined; }
     const idx = this._findIndexByParams(model, params);
     if ( idx === -1 ) { return undefined; }
+    console.log(`lookup(${model}, ${params}) --> ${this.byModel[model][idx].cursor}`);
     return this.byModel[model][idx].cursor;
   }
 
   add(model, params, cursor) {
+    console.log(`add(${model}, ${params}, ${cursor})`);
     if (this.exists(model, params)) {
       throw new Error('already exists');
     }
