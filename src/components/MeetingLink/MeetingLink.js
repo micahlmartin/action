@@ -13,12 +13,10 @@ export default class MeetingLink extends Component {
     hostname: PropTypes.string,
     port: PropTypes.string,
     location: PropTypes.string,
-    onChange: PropTypes.func,
     onCopy: PropTypes.func
   }
 
   onCopy() {
-    // Todo: use callback?
     console.log('Meeting URL copied!');
   }
 
