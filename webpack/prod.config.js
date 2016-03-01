@@ -5,7 +5,7 @@ var path = require('path');
 var webpack = require('webpack');
 var CleanPlugin = require('clean-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var strip = require('strip-loader');
+var strip = require('strip-loader');a
 
 var projectRootPath = path.resolve(__dirname, '../');
 var assetsPath = path.resolve(projectRootPath, './static/dist');
@@ -41,7 +41,8 @@ module.exports = {
       { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
       { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
       { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
-      { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' }
+      { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' },
+      { test: /\.sh$/, loader: 'noop-loader' }
     ]
   },
   progress: true,
@@ -65,7 +66,9 @@ module.exports = {
     }),
 
     // ignore dev config
-    new webpack.IgnorePlugin(/\.\/dev/, /\/config$/),
+    new webpack.IgnorePlugin(/\.\/dev/, /\/config$/, /\.sh$/),
+    // ignore utility scripts
+    new webpack.IgnorePlugin(/\.sh$/),
 
     // set global vars
     new webpack.DefinePlugin({
