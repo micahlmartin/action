@@ -5,19 +5,27 @@ import { pushState } from 'redux-router';
 import * as meetingActions from 'redux/modules/meeting';
 import config from '../../../config/config';
 import { Landing } from 'containers';
+import lock from 'helpers/getAuth0Lock';
 
 const styles = require('./LandingLayout.scss'); // eslint-disable-line
 
+
 @connect(
   state => ({
-    meeting: state.meeting.instance
+    meeting: state.meeting.instance,
+    tokenLoaded: state.auth.token.loaded
   }),
   {...meetingActions, pushState})
 export default class LandingLayout extends Component {
   static propTypes = {
     meeting: PropTypes.object,
+    tokenLoaded: PropTypes.bool.isRequired,
     create: PropTypes.func.isRequired,
     pushState: PropTypes.func.isRequired
+  }
+
+  componentWillMount() {
+    this.lock = lock;
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -33,8 +41,13 @@ export default class LandingLayout extends Component {
   };
 
   handleOnMeetingCreateClick = (event) => {
+    const { props } = this;
     event.preventDefault();
-    this.props.create();
+    if (!props.tokenLoaded) {
+      this.lock.show();
+    } else {
+      this.props.create();
+    }
   };
 
   render() {

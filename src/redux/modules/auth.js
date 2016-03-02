@@ -1,103 +1,99 @@
-const LOAD = 'redux-example/auth/LOAD';
-const LOAD_SUCCESS = 'redux-example/auth/LOAD_SUCCESS';
-const LOAD_FAIL = 'redux-example/auth/LOAD_FAIL';
-const LOGIN = 'redux-example/auth/LOGIN';
-const LOGIN_SUCCESS = 'redux-example/auth/LOGIN_SUCCESS';
-const LOGIN_FAIL = 'redux-example/auth/LOGIN_FAIL';
-const LOGOUT = 'redux-example/auth/LOGOUT';
-const LOGOUT_SUCCESS = 'redux-example/auth/LOGOUT_SUCCESS';
-const LOGOUT_FAIL = 'redux-example/auth/LOGOUT_FAIL';
+const LOAD_TOKEN = 'action/auth/LOAD_TOKEN';
+const LOAD_TOKEN_SUCCESS = 'action/auth/LOAD_TOKEN_SUCCESS';
+const LOAD_TOKEN_FAIL = 'action/auth/LOAD_TOKEN_FAIL';
+const SET_TOKEN = 'action/auth/SET_TOKEN';
+const SET_TOKEN_SUCCESS = 'action/auth/SET_TOKEN_SUCCESS';
+const SET_TOKEN_FAIL = 'action/auth/SET_TOKEN_FAIL';
 
 const initialState = {
-  loaded: false
+  token: {
+    loaded: false,
+    loading: false,
+    error: '',
+    value: null
+  }
 };
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case LOAD:
+    case LOAD_TOKEN:
+    case SET_TOKEN:
       return {
         ...state,
-        loading: true
+        token: {
+          ...state.token,
+          loading: true
+        }
       };
-    case LOAD_SUCCESS:
+    case LOAD_TOKEN_SUCCESS:
+    case SET_TOKEN_SUCCESS:
       return {
         ...state,
-        loading: false,
-        loaded: true,
-        user: action.result
+        token: {
+          ...state.token,
+          loading: false,
+          loaded: true,
+          value: action.result
+        }
       };
-    case LOAD_FAIL:
+    case LOAD_TOKEN_FAIL:
+    case SET_TOKEN_FAIL:
       return {
         ...state,
-        loading: false,
-        loaded: false,
-        error: action.error
-      };
-    case LOGIN:
-      return {
-        ...state,
-        loggingIn: true
-      };
-    case LOGIN_SUCCESS:
-      return {
-        ...state,
-        loggingIn: false,
-        user: action.result
-      };
-    case LOGIN_FAIL:
-      return {
-        ...state,
-        loggingIn: false,
-        user: null,
-        loginError: action.error
-      };
-    case LOGOUT:
-      return {
-        ...state,
-        loggingOut: true
-      };
-    case LOGOUT_SUCCESS:
-      return {
-        ...state,
-        loggingOut: false,
-        user: null
-      };
-    case LOGOUT_FAIL:
-      return {
-        ...state,
-        loggingOut: false,
-        logoutError: action.error
+        token: {
+          ...state.token,
+          loading: false,
+          loaded: false,
+          error: action.error,
+          value: null
+        }
       };
     default:
       return state;
   }
 }
 
-export function isLoaded(globalState) {
-  return globalState.auth && globalState.auth.loaded;
+export function isTokenLoaded(globalState) {
+  return (globalState.auth && globalState.auth.token &&
+           globalState.auth.token.loaded);
 }
 
-export function load() {
+export function loadToken() {
   return {
-    types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: (client) => client.http.get('/loadAuth')
+    types: [LOAD_TOKEN, LOAD_TOKEN_SUCCESS, LOAD_TOKEN_FAIL],
+    promise: (client) => {
+      return new Promise( (resolve, reject) => {
+        if (client.token !== null) {
+          resolve(client.token);
+        } else {
+          reject('unable to load auth token');
+        }
+      });
+    }
   };
 }
 
-export function login(name) {
+export function setToken(token) {
   return {
-    types: [LOGIN, LOGIN_SUCCESS, LOGIN_FAIL],
-    promise: (client) => client.http.post('/login', {
-      data: {
-        name: name
-      }
-    })
+    types: [SET_TOKEN, SET_TOKEN_SUCCESS, SET_TOKEN_FAIL],
+    promise: (client) => {
+      return new Promise( (resolve, reject) => {
+        client.updateToken(token);
+        if (token) {
+          resolve(token);
+        } else {
+          reject('unable to set auth token');
+        }
+      });
+    }
   };
 }
 
-export function logout() {
+export function setTokenError(error) {
   return {
-    types: [LOGOUT, LOGOUT_SUCCESS, LOGOUT_FAIL],
-    promise: (client) => client.http.get('/logout')
+    type: SET_TOKEN_FAIL,
+    payload: {
+      error: error
+    }
   };
 }

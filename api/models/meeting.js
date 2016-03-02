@@ -30,7 +30,7 @@ function subscribe(io, room, params, modelPath) {
     try {
       subscriptions.add(modelPath, params, cursor);
       subscriptions.addRoomTo(modelPath, params, room);
-    } catch (e) { }
+    } catch (e) { console.debug(e); } // eslint-disable-line
     cursor.on('change', (doc) => {
       const rooms = subscriptions.getRoomsFor(modelPath, params);
       publish(io, rooms, modelPath, doc, doc.updatedBy);

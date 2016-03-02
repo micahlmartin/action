@@ -74,6 +74,15 @@ module.exports = {
       { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
       { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
       { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' },
+      { test: /node_modules\/auth0-lock\/.*\.js$/,
+        loaders: [
+          'transform-loader/cacheable?brfs',
+          'transform-loader/cacheable?packageify'
+        ]
+      }, {
+        test: /node_modules\/auth0-lock\/.*\.ejs$/,
+        loader: 'transform-loader/cacheable?ejsify'
+      }
     ]
   },
   node: {
