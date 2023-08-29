@@ -93,7 +93,7 @@
     "falcor": "^0.1.15",
     "falcor-express": "^0.1.2",
     "falcor-http-datasource": "^0.1.2",
-    "falcor-router": "^0.2.12",
+    "falcor-router": "^0.8.3",
     "falcor-saddle": "0.1.0",
     "file-loader": "^0.8.5",
     "history": "1.17.0",
